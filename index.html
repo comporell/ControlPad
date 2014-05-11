@@ -1,39 +1,72 @@
 <html>
 <head>
 <meta charset="utf-8"/>
-    <title>BBControl v0.1:</title>
-    <script src = "/socket.io/socket.io.js" > </script>
-    <link rel="stylesheet" href="themes/BBControl.min.css" />
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile.structure-1.4.2.min.css" />
-    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
+    <title>BBB ControlPad v0.0.3</title>
+    <script type="text/javascript" src = "/socket.io/socket.io.js" > </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link type="text/css" rel="stylesheet" href="themes/controlpad.css" />
+    <link type="text/css" rel="stylesheet" href="themes/jquery.mobile.icons.min.css" />
+    <link type="text/css" rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile.structure-1.4.2.min.css" /> 
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script> 
+    <script type="text/javascript" src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script> 
     <script>
         var socket = io.connect();
             socket.on('datastatus', function (data) {
-                document.getelementById("result").innerhtml=data;
+                document.getelementById("result").innerHTML=data;
             });
     </script>
     <script>
-    function submitForm(){
-      socket.emit('sendval', document.getElementById('txtmorse').value);
+    function moveRelative(direction){
+      //socket.emit('sendval', document.getElementById('txtmorse').value);
+      var elementid=direction+"-slider";
+      var slidervalue = document.getElementById(elementid).value;
+      socket.emit('moveRelative',{ "direction": direction,"duration":slidervalue } );
+      document.getElementById('result').innerHTML=slidervalue;
     }
     </script>
 </head>
  
 <body>
-<div data-role="page" data-theme="a">
+<div data-role="page" data-theme="c">
 	<div data-role="header" data-position="inline">
-		<h1>BBControl v0.1</h1>
+		<h1>BBB ControlPad v0.0.3</h1>
 	</div>
-    <div data-role="content" data-theme="a">
-        <pre>Enter your text into the text field<br/>Slider will change the light frequency.</pre>
-        <p>For any questions contact <a href="#" class="ui-link">mail</a>.</p>
-        <label for="txtmorse">Text to morsify:</label>
-        <input type="text" name="morsetext" id="txtmorse"/>
-        <input type="frequency" name="slider1" id="slider1" value="50" min="200" max="100" data-theme="a" />
-        <input type="button" name="on" id="btn_send" value="Gönder" class="btn btn-default" onClick="submitForm();">
-        <pre id="result"></pre>
+    <div data-role="content" data-theme="c">
+        <table width="550" align="center">
+        <tr>
+        <td></td>
+        <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="moveRelative('forward')">Forward</button><br/>
+            <input type="range" name="slider1" id="forward-slider" value="1000" min="100" max="10000" data-theme="c" />
+        </td>
+        <td></td>
+        </tr>
+        <tr>
+            <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="moveRelative('left');">Left</button><br/>
+                <input type="range" name="slider1" id="left-slider" value="300" min="100" max="1500" data-theme="c" />
+            </td>
+            <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="moveRelative('halt');">Halt</button><br/>
+                <input type="range" name="slider1" id="halt-slider" value="0" min="0" max="1" data-theme="c" visible="false"/>
+            </td>
+            
+            <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="moveRelative('right');">Right</button><br/>
+                <input type="range" name="slider1" id="right-slider" value="300" min="100" max="1500" data-theme="c" />
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="moveRelative('backward');">Backward</button><br/>
+                <input type="range" name="slider1" id="backward-slider" value="1000" min="100" max="3000" data-theme="c" />
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><div id="result" style="color:black;"data-theme="c"></div></td>
+            <td></td>
+        </tr>
+        </table>
     </div>
 </div>
 </body>
 </html>
+
