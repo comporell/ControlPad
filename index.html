@@ -12,7 +12,7 @@
     <script>
         var socket = io.connect();
             socket.on('datastatus', function (data) {
-                document.getelementById("result").innerHTML=data;
+                document.getElementById("result").innerHTML=data;
             });
     </script>
     <script>
@@ -22,6 +22,15 @@
       var slidervalue = document.getElementById(elementid).value;
       socket.emit('moveRelative',{ "direction": direction,"duration":slidervalue } );
       document.getElementById('result').innerHTML=slidervalue;
+    }
+    
+    function rotateHead(angle){
+        if (angle == "auto") {
+            var slidervalue = document.getElementById('headSlider').value;
+            socket.emit('rotateHead',{ "angle": slidervalue } );
+        }else {
+            socket.emit('rotateHead',{ "angle": angle } );
+        }
     }
     </script>
 </head>
@@ -63,6 +72,22 @@
             <td></td>
             <td><div id="result" style="color:black;"data-theme="c"></div></td>
             <td></td>
+        </tr>
+        <tr>
+            <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="rotateHead('0');">Rotate Head 0</button><br/>
+            </td>
+            <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="rotateHead('90');">Rotate Head 90</button><br/>
+            </td>
+            <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="rotateHead('180');">Rotate Head 180</button><br/>
+            </td>
+        </tr>
+        <tr>
+            <td colspan ="3">
+            <input type="range" name="headSlider" id="headSlider" value="90" min="0" max="180" data-theme="c" visible="true" onchange="rotateHead('auto')"/>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3"><div id="result"></div></td>
         </tr>
         </table>
     </div>

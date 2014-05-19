@@ -58,12 +58,17 @@ io.sockets.on('connection',function(socket){
         console.log("Socket :" + socket);
         console.log("Request :" + data);
         t.moveRelative(data.direction,data.duration);
-
-        
         //t.moveRelative(data.toLowerCase(),3000);
-        
-        
         //socket.emit('datastatus','sent');
+        //socket.broadcast.emit('dataupdate','ok);
+    });
+    
+    socket.on('rotateHead',function(data){
+        console.log("Socket :" + socket);
+        console.log("Request :" + data);
+        t.headRotate(data.angle);
+        
+        socket.emit('datastatus',"Current angle: " + data.angle);
         //socket.broadcast.emit('dataupdate','ok);
     });
 });
