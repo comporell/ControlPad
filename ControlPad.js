@@ -5,6 +5,9 @@ email: comporell@gmail.com
 
 var b = require('bonescript');
 var t = require('./lib/tank.js');
+var exec = require('child_process').exec;
+
+
 
 var app = require('http').createServer(handler);
 var io = require('socket.io').listen(app);
@@ -70,6 +73,22 @@ io.sockets.on('connection',function(socket){
         
         socket.emit('datastatus',"Current angle: " + data.angle);
         //socket.broadcast.emit('dataupdate','ok);
+    });
+    socket.on('capture',function(data){
+        exec('capturewebcam', function callback(error, stdout, stderr){
+            socket.emit('capturedImage','1');
+            var filename = 'capture.jpg';
+            var base64filesize = fs.stat(filename,function(err,stats){
+                if(err){
+                        socket.emit('capturestatus','0');
+                    }else {
+                        socket.emit('capturestatus','1');
+                        return stats.size;
+                    }
+                });
+            }
+            console.log("Image captured");
+        });
     });
 });
 console.log("System ON");

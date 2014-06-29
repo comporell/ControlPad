@@ -10,9 +10,20 @@
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script> 
     <script type="text/javascript" src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script> 
     <script>
+        $.ajaxSetup({cache: false});
         var socket = io.connect();
             socket.on('datastatus', function (data) {
                 document.getElementById("result").innerHTML=data;
+            });
+            socket.on('capturestatus',function(data){
+                //document.getElementById("capturecanvas").src="capture.jpg?"+Math.random();
+                var canvas = document.getElementById("capturecanvas");
+                var context = canvas.getContext("2d");
+                var imageObj = new Image();
+                imageObj.onload = function(){
+                    context.drawImage(imageObj,0,0);
+                };
+                imageObj.src="capture.jpg";
             });
     </script>
     <script>
@@ -22,6 +33,10 @@
       var slidervalue = document.getElementById(elementid).value;
       socket.emit('moveRelative',{ "direction": direction,"duration":slidervalue } );
       document.getElementById('result').innerHTML=slidervalue;
+    }
+    
+    function capture(capVal){
+        socket.emit('capture',{ "value": capVal } );
     }
     
     function rotateHead(angle){
@@ -85,6 +100,12 @@
             <td colspan ="3">
             <input type="range" name="headSlider" id="headSlider" value="90" min="0" max="180" data-theme="c" visible="true" onchange="rotateHead('auto')"/>
             </td>
+        </tr>
+        <tr>
+            <td colspan="3"><canvas id="capturecanvas" width="640" height="480" ></canvas></td>
+        </tr>
+        <tr>
+            <td colspan="3"><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="star" onclick="capture('1');">Capture</button><br/></td>
         </tr>
         <tr>
             <td colspan="3"><div id="result"></div></td>
