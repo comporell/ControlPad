@@ -1,0 +1,124 @@
+<html>
+<head>
+<meta charset="utf-8"/>
+    <title>BBB ControlPad v0.0.5</title>
+    <script type="text/javascript" src = "/socket.io/socket.io.js" > </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link type="text/css" rel="stylesheet" href="themes/controlpad.css" />
+    <link type="text/css" rel="stylesheet" href="themes/jquery.mobile.icons.min.css" />
+    <link type="text/css" rel="stylesheet" href="lib/jquery.mobile.structure-1.4.2.min.css" /> 
+    <script type="text/javascript" src="lib/jquery-1.10.2.min.js"></script> 
+    <script type="text/javascript" src="lib/jquery.mobile-1.4.2.min.js"></script> 
+    <script>
+        $.ajaxSetup({cache: false});
+        var socket = io.connect();
+            socket.on('datastatus', function (data) {
+                document.getElementById("result").innerHTML=data;
+            });
+            socket.on('capturestatus',function(data){
+                //document.getElementById("capturecanvas").src="capture.jpg?"+Math.random();
+                var canvas = document.getElementById("capturecanvas");
+                var context = canvas.getContext("2d");
+                var imageObj = new Image();
+                imageObj.onload = function(){
+                    context.drawImage(imageObj,0,0);
+                };
+                imageObj.src="capture.jpg";
+            });
+            socket.on('captureData'),function(data,filesize){
+                var canvas=document.getElemenyById("capturecanvas");
+                var context = canvas.getContext("2d");
+                var imageObj = new Image();
+                image.src=data;
+            }
+    </script>
+    <script>
+    function moveRelative(direction){
+      //socket.emit('sendval', document.getElementById('txtmorse').value);
+      var elementid=direction+"-slider";
+      var slidervalue = document.getElementById(elementid).value;
+      socket.emit('moveRelative',{ "direction": direction,"duration":slidervalue } );
+      document.getElementById('result').innerHTML=slidervalue;
+    }
+    
+    function capture(capVal){
+        socket.emit('capture',{ "value": capVal } );
+    }
+    
+    function rotateHead(angle){
+        if (angle == "auto") {
+            var slidervalue = document.getElementById('headSlider').value;
+            socket.emit('rotateHead',{ "angle": slidervalue } );
+        }else {
+            socket.emit('rotateHead',{ "angle": angle } );
+        }
+    }
+    </script>
+</head>
+ 
+<body>
+<div data-role="page" data-theme="c">
+	<div data-role="header" data-position="inline">
+		<h1>BBB ControlPad v0.0.5</h1>
+	</div>
+    <div data-role="content" data-theme="c">
+        <table width="550" align="center">
+        <tr>
+        <td></td>
+        <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="moveRelative('forward')">Forward</button><br/>
+            <input type="range" name="slider1" id="forward-slider" value="1000" min="100" max="10000" data-theme="c" />
+        </td>
+        <td></td>
+        </tr>
+        <tr>
+            <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="moveRelative('left');">Left</button><br/>
+                <input type="range" name="slider1" id="left-slider" value="300" min="100" max="1500" data-theme="c" />
+            </td>
+            <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="moveRelative('halt');">Halt</button><br/>
+                <input type="range" name="slider1" id="halt-slider" value="0" min="0" max="1" data-theme="c" visible="false"/>
+            </td>
+            
+            <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="moveRelative('right');">Right</button><br/>
+                <input type="range" name="slider1" id="right-slider" value="300" min="100" max="1500" data-theme="c" />
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="moveRelative('backward');">Backward</button><br/>
+                <input type="range" name="slider1" id="backward-slider" value="1000" min="100" max="3000" data-theme="c" />
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><div id="result" style="color:black;"data-theme="c"></div></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="rotateHead('0');">Rotate Head 0</button><br/>
+            </td>
+            <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="rotateHead('90');">Rotate Head 90</button><br/>
+            </td>
+            <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="rotateHead('180');">Rotate Head 180</button><br/>
+            </td>
+        </tr>
+        <tr>
+            <td colspan ="3">
+            <input type="range" name="headSlider" id="headSlider" value="90" min="0" max="180" data-theme="c" visible="true" onchange="rotateHead('auto')"/>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3"><canvas id="capturecanvas" width="640" height="480" ></canvas></td>
+        </tr>
+        <tr>
+            <td colspan="3"><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="star" onclick="capture('1');">Capture</button><br/></td>
+        </tr>
+        <tr>
+            <td colspan="3"><div id="result"></div></td>
+        </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>
+

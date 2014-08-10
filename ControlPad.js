@@ -1,13 +1,10 @@
 /*CONTROLPAD v0.1 by Trevize Daneel
 This is a control script for Beaglebone Black
-email: comporell@gmail.com
 */
 
 var b = require('bonescript');
 var t = require('./lib/tank.js');
 var exec = require('child_process').exec;
-
-
 
 var app = require('http').createServer(handler);
 var io = require('socket.io').listen(app);
@@ -31,7 +28,11 @@ function handler(request,response){
 		case '.css':
 			contentType = 'text/css';
 			break;
+		case '.jpg':
+		    contentType = "image/jpeg";
+		    break;
 	}
+	console.log("Serving file:" + filePath + " (" + contentType +")" );
 	
 	path.exists(filePath, function(exists) {
 	
@@ -70,37 +71,67 @@ io.sockets.on('connection',function(socket){
         console.log("Socket :" + socket);
         console.log("Request :" + data);
         t.headRotate(data.angle);
-        
+        socket.emit('datastatus',"Current angle: " + data.angle);
+        //socket.broadcast.emit('dataupdate','ok);
+    });
+    socket.on('rotateHead2',function(data){
+        console.log("Socket :" + socket);
+        console.log("Request :" + data);
+        t.headRotate2(data.angle);
         socket.emit('datastatus',"Current angle: " + data.angle);
         //socket.broadcast.emit('dataupdate','ok);
     });
     socket.on('capture',function(data){
         exec('capturewebcam', function callback(error, stdout, stderr){
-            socket.emit('capturedImage','1');
-            var filename = 'capture.jpg';
-            var base64filesize = fs.stat(filename,function(err,stats){
-                if(err){
-                        socket.emit('capturestatus','0');
-                    }else {
-                        socket.emit('capturestatus','1');
-                        return stats.size;
-                    }
-                });
-            }
-            console.log("Image captured");
+            console.log("Error: "+error);
+            socket.emit('capturestatus','1');
         });
+        
+        getTheNewImage(function(data,size){
+            socket.emit('firstChunkSent', data, size)
+        });
+        
     });
 });
-console.log("System ON");
 
-t.resetSystem();
+function getTheNewImage(callback){
+  var filename = 'capture.jpg';
+  var base64FileSize  = fs.stat(filename,function(err,stats){
+    if (err) { throw err; }
+    //return stats.size
+    callback(null,stats.size);
+  });
 
+  var readable = fs.createReadStream(filename, { encoding: 'base64' });
+  
+  readable.on('readable', function() {
+    var getImageData = function(){
+      while (null !== (base64ImageData = readable.read())) {
+      return base64ImageData
+      }
+    }
+    
+    callback(getImageData(),base64FileSize)
+  });
+
+  readable.on('end', function() {
+    console.log('there will be no more data.')
+  });
+
+  readable.on('error', function(err) {
+    console.log('here is the error: '+err)
+    readable.end(err);
+  });
+}
+    console.log("System ON...");
+    t.resetSystem();
+    exec('capturewebcam', function callback(error, stdout, stderr){
+        console.log("Error: "+error);
+    });
+    console.log("System Ready...");
+        
 //function control(d1){
 //    t.moveRelative(d1,3000);
 //}
-
-
-
-
 
 
