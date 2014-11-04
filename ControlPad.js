@@ -81,6 +81,22 @@ io.sockets.on('connection',function(socket){
         socket.emit('datastatus',"Current angle: " + data.angle);
         //socket.broadcast.emit('dataupdate','ok);
     });
+    socket.on('rotateHead3',function(data){
+        console.log("Socket :" + socket);
+        console.log("Request :" + data);
+        t.headRotate3(data.angle);
+        socket.emit('datastatus',"Current angle: " + data.angle);
+        //socket.broadcast.emit('dataupdate','ok);
+    });
+    
+    socket.on('odata',function(data){
+        console.log("Socket :" + socket);
+        console.log("Request :" + data);
+        socket.emit('datastatus',"data values: Port " + data.dataPort + " / Value: " + data.dataValue + " / Duration : " + data.dataDuration);
+        t.odata(data.dataPort,data.dataValue,data.dataDuration);
+    });
+    
+    /*
     socket.on('capture',function(data){
         exec('capturewebcam', function callback(error, stdout, stderr){
             console.log("Error: "+error);
@@ -90,8 +106,17 @@ io.sockets.on('connection',function(socket){
         getTheNewImage(function(data,size){
             socket.emit('firstChunkSent', data, size)
         });
-        
+    
+    });*/
+    
+    socket.on('fire',function(data){
+        console.log("FireSocket:" + socket);
+        console.log("FireData:" + data);
+        t.fire(data,2000);
+        socket.emit('datastatus','fired');
     });
+    
+    
 });
 
 function getTheNewImage(callback){

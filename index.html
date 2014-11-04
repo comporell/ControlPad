@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta charset="utf-8"/>
-    <title>BBB ControlPad v0.0.5</title>
+    <title>BBB ControlPad v0.0.6</title>
     <script type="text/javascript" src = "/socket.io/socket.io.js" > </script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link type="text/css" rel="stylesheet" href="themes/controlpad.css" />
@@ -31,6 +31,17 @@
         socket.emit('capture',{ "value": capVal } );
     }
     
+    function fire(fireVal){
+        socket.emit('fire',{ "value": fireVal } );
+    }
+    
+    function odata(dataPort,dataValue,dataDuration){
+        socket.emit('odata',{   "dataPort": dataPort,
+                                "dataValue": dataVal,
+                                "dataDuration" : dataDuration
+                                } );
+    }
+    
     function rotateHead(angle){
         if (angle == "auto") {
             var slidervalue = document.getElementById('headSlider').value;
@@ -48,13 +59,21 @@
             socket.emit('rotateHead2',{ "angle": angle } );
         }
     }
+    function rotateHead3(angle){
+        if (angle == "auto") {
+            var slidervalue = document.getElementById('headSlider3').value;
+            socket.emit('rotateHead3',{ "angle": slidervalue } );
+        }else {
+            socket.emit('rotateHead3',{ "angle": angle } );
+        }
+    }
     </script>
 </head>
  
 <body>
 <div data-role="page" data-theme="c">
 	<div data-role="header" data-position="inline">
-		<h1>BBB ControlPad v0.0.5</h1>
+		<h1>BBB ControlPad v0.0.6</h1>
 	</div>
     <div data-role="content" data-theme="c">
         <table width="550" align="center">
@@ -108,14 +127,27 @@
             </td>
         </tr>
         <tr>
+            <td colspan ="3">
+            <input type="range" name="headSlider3" id="headSlider3" value="90" min="0" max="180" data-theme="c" visible="true" onchange="rotateHead3('auto')"/>
+            </td>
+        </tr>
+        <tr>
             <td colspan="3">
-            <img alt="" src="http://192.168.3.1:8090/?action=stream" width="640" height="480" />
+            <img alt="" src="http://beagle:8090/?action=stream" width="640" height="480" />
             </td>
         </tr>
         <tr>
             <td colspan="3"><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="star" onclick="capture('1');">Capture</button><br/></td>
         </tr>
         <tr>
+            <td colspan="3"><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="star" onclick="fire('1');">Fire</button><br/></td>
+        </tr>
+        <tr>
+            <td colspan="3"><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="star" onclick="odata('1','1','0');">Led</button><br/></td>
+        </tr>
+        <tr>
+            <td colspan="3"><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="star" onclick="odata('2','1','0');">Beep</button><br/></td>
+        </tr>
             <td colspan="3"><div id="result"></div></td>
         </tr>
         </table>
