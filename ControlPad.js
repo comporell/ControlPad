@@ -4,12 +4,15 @@ This is a control script for Beaglebone Black
 
 var b = require('bonescript');
 var t = require('./lib/tank.js');
+var m = require('./lib/morsify.js');
+
 var exec = require('child_process').exec;
 
 var app = require('http').createServer(handler);
 var io = require('socket.io').listen(app);
 var fs= require('fs');
 var path = require('path');
+var pins;
 
 app.listen(9090);
 
@@ -96,6 +99,17 @@ io.sockets.on('connection',function(socket){
         t.odata(data.dataPort,data.dataValue,data.dataDuration);
     });
     
+    
+    socket.on('morsify',function(data){
+       console.log("Socket : " + socket);
+       console.log("Request : " + data);
+       
+       //20 en iyi 100 normal
+       pins=["P8_14","P8_12"];
+       
+       m.morsify(pins,data.morseValue,100);
+    });
+    
     /*
     socket.on('capture',function(data){
         exec('capturewebcam', function callback(error, stdout, stderr){
@@ -154,6 +168,8 @@ function getTheNewImage(callback){
         console.log("Error: "+error);
     });
     console.log("System Ready...");
+    pins=["P8_14","P8_12"];
+    m.morsify(pins,"hello",100);
         
 //function control(d1){
 //    t.moveRelative(d1,3000);

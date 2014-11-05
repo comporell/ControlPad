@@ -37,10 +37,17 @@
     
     function odata(dataPort,dataValue,dataDuration){
         socket.emit('odata',{   "dataPort": dataPort,
-                                "dataValue": dataVal,
+                                "dataValue": dataValue,
                                 "dataDuration" : dataDuration
                                 } );
     }
+    
+    function morsify(morseText){
+        socket.emit('morsify',{ "morseValue": morseText
+            
+        });
+    }
+    
     
     function rotateHead(angle){
         if (angle == "auto") {
@@ -123,7 +130,7 @@
         </tr>
         <tr>
             <td colspan ="3">
-            <input type="range" name="headSlider2" id="headSlider2" value="90" min="0" max="180" data-theme="c" visible="true" onchange="rotateHead2('auto')"/>
+            <input type="range" name="headSlider2" id="headSlider2" value="40" min="15" max="80" data-theme="c" visible="true" onchange="rotateHead2('auto')"/>
             </td>
         </tr>
         <tr>
@@ -143,10 +150,13 @@
             <td colspan="3"><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="star" onclick="fire('1');">Fire</button><br/></td>
         </tr>
         <tr>
-            <td colspan="3"><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="star" onclick="odata('1','1','0');">Led</button><br/></td>
+            <td colspan="3"><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="star" onclick="odata('0','1','0');">Led</button><br/></td>
         </tr>
         <tr>
-            <td colspan="3"><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="star" onclick="odata('2','1','0');">Beep</button><br/></td>
+            <td colspan="3"><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="star" onclick="odata('1','1','0');">Beep</button><br/></td>
+        </tr>
+        <tr>
+            <input type="text" name="morsetext" id="txtmorse" onclick="morsify(this.value);"/>
         </tr>
             <td colspan="3"><div id="result"></div></td>
         </tr>
