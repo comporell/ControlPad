@@ -110,6 +110,15 @@ io.sockets.on('connection',function(socket){
        m.morsify(pins,data.morseValue,100);
     });
     
+    
+    socket.on('exitProgram',function(data){
+        if(t.exitProgram()){
+            console.log("terminated");
+            throw new Error("Program Terminated!");
+        };
+    });
+    
+    
     /*
     socket.on('capture',function(data){
         exec('capturewebcam', function callback(error, stdout, stderr){

@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta charset="utf-8"/>
-    <title>BBB ControlPad v0.0.6</title>
+    <title>BBB ControlPad v0.0.7</title>
     <script type="text/javascript" src = "/socket.io/socket.io.js" > </script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link type="text/css" rel="stylesheet" href="themes/controlpad.css" />
@@ -14,9 +14,10 @@
     <script>
         $.ajaxSetup({cache: false});
         var socket = io.connect();
-            socket.on('datastatus', function (data) {
-                document.getElementById("result").innerHTML=data;
-            });
+        socket.on('datastatus', function (data) {
+            document.getElementById("result").innerHTML=data;
+        });
+        
     </script>
     <script>
     function moveRelative(direction){
@@ -42,10 +43,10 @@
                                 } );
     }
     
-    function morsify(morseText){
-        socket.emit('morsify',{ "morseValue": morseText
-            
-        });
+    function morsify(event,morse){
+        if(event.keyCode==13){
+            socket.emit('morsify',{ "morseValue": morse.value });
+        }
     }
     
     
@@ -74,22 +75,24 @@
             socket.emit('rotateHead3',{ "angle": angle } );
         }
     }
+    function exitProgram(){
+        socket.emit('exitProgram', { "exitProgramValue": "1"} );
+    }
     </script>
 </head>
  
 <body>
 <div data-role="page" data-theme="c">
 	<div data-role="header" data-position="inline">
-		<h1>BBB ControlPad v0.0.6</h1>
+		<h1>BBB ControlPad v0.0.7</h1>
 	</div>
     <div data-role="content" data-theme="c">
         <table width="550" align="center">
         <tr>
-        <td></td>
-        <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="moveRelative('forward')">Forward</button><br/>
-            <input type="range" name="slider1" id="forward-slider" value="1000" min="100" max="10000" data-theme="c" />
-        </td>
-        <td></td>
+            <td></td>
+            <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="moveRelative('forward')">Forward</button><br/>
+            <input type="range" name="slider1" id="forward-slider" value="1000" min="100" max="10000" data-theme="c" /></td>
+            <td></td>
         </tr>
         <tr>
             <td><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="up" onclick="moveRelative('left');">Left</button><br/>
@@ -156,9 +159,13 @@
             <td colspan="3"><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="star" onclick="odata('1','1','0');">Beep</button><br/></td>
         </tr>
         <tr>
-            <input type="text" name="morsetext" id="txtmorse" onclick="morsify(this.value);"/>
+            <td colspan="3"><input type="text" placeholder="Enter text to morsify" name="morsetext" id="txtmorse" onkeypress="javascript:morsify(event,this)" /></td>
         </tr>
+        <tr>
             <td colspan="3"><div id="result"></div></td>
+        </tr>
+        <tr>
+            <td colspan="3"><button class=" ui-btn ui-btn-c ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" data-form="ui-btn-up-c" data-theme="c" data-icon="star" onclick="exitProgram();" >Exit Program</button></td>
         </tr>
         </table>
     </div>
