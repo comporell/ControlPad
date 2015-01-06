@@ -107,7 +107,7 @@
 	<div class="clear"></div>
 	
 	<div data-role="content" data-theme="c" role="main" class="ui-content" style="display: flex;justify-content: space-around;">
-		<div id="liveCam" style="background-color: rgba(0, 0, 0, 0.1);background-image: url('http://192.168.8.1:8090/?action=stream');background-repeat: no-repeat;background-size:100%; background-position:center top; width:640px;height: 480px" >
+		<div id="liveCam" style="background-color: rgba(0, 0, 0, 0.1);background-image: url('darkstar.png');background-repeat: no-repeat;background-size:100%; background-position:center top; width:640px;height: 480px" >
 		<!-- http://192.168.8.1:8090/?action=stream -->
 			<table id="controlPanel1" width="80" align="center" style="position: relative;top: 50%;transform: translateY(-50%);">
         	<tr>

@@ -655,7 +655,7 @@ html .ui-bar-c .ui-btn:active,
 html .ui-body-c .ui-btn:active,
 html body .ui-group-theme-c .ui-btn:active,
 html head + body .ui-btn.ui-btn-c:active {
-	background-color: rgba(0, 0, 0, 0.1)
+	background-color: #FFFFFF /*{c-bdown-background-color}*/;
 	border-color: #8c8c8c /*{c-bdown-border}*/;
 	color: #000000 /*{c-bdown-color}*/;
 	text-shadow: 0 /*{c-bdown-shadow-x}*/ 1px /*{c-bdown-shadow-y}*/ 0 /*{c-bdown-shadow-radius}*/ #eeeeee /*{c-bdown-shadow-color}*/;
